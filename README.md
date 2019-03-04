@@ -17,7 +17,7 @@ Choose a region, everything will be created in that region
 1 - run the cloudformation file
 -------------------------------
 
-[![Launch Stack](https://raw.githubusercontent.com/nuvirt/terraform-aws-codebuild/master/aws-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=terraform&templateURL=https://raw.githubusercontent.com/nuvirt/terraform-aws-codebuild/master/cloudformation/codebuild.json)
+[![Launch Stack](https://github.com/nuvirt/terraform-aws-codebuild/blob/master/aws-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=terraform&templateURL=https://raw.githubusercontent.com/nuvirt/terraform-aws-codebuild/master/cloudformation/codebuild.json)
 
 
 This will create 3 objects:
