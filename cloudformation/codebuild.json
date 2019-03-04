@@ -1,0 +1,94 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "A codebuild system to run terraform ",
+  "Parameters" : {
+        "DataPartName" : {
+          "Description": "the data part name as appear in the cloudformation stack name",
+          "Type": "String",
+          "Default" : "mydataname"
+        },
+        "GithubToken": {
+          "Description": "GitHub API Token used for Status creation.",
+          "Type": "String"
+      },
+      "ProjectName": {
+          "AllowedPattern": "^[a-zA-Z0-9-_]*$",
+          "Description": "Name to give the CodeBuild Project. For this sample, use the same name as your repository.",
+          "MaxLength": "255",
+          "MinLength": "2",
+          "Type": "String"
+      },
+      "RepositoryUrl": {
+          "Description": "HTTPS Clone URL of the repository in GitHub. Example: 'https://github.com/owner/repo.git'",
+          "Type": "String"
+      }
+  },
+  "Resources" : {
+      "S3StateAndSoftware": {
+  					"Type" : "AWS::S3::Bucket",
+  					"Properties" : {
+  								"BucketName" : { "Fn::Join" : [ ".", [ { "Ref" : "ProjectName" }, { "Ref" : "AWS::Region" } , "terraform-state" ] ] }
+  					}
+  		},
+      "Adminrole": {
+				"Type": "AWS::IAM::Role",
+			  "Properties": {
+					   "RoleName": { "Fn::Join" : [ ".", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "codebuild" ] ] },
+					    "AssumeRolePolicyDocument": {
+								     "Version" : "2012-10-17",
+								     "Statement": [ {
+											     "Effect": "Allow",
+											     "Principal": { "Service": [ "codebuild.amazonaws.com" ] },
+								           "Action": [ "sts:AssumeRole" ]
+								     	} ]
+					     },
+					     "Path": "/",
+					     "Policies": [ {
+			               "PolicyName": "adminaccess",
+			               "PolicyDocument": {
+						                  "Version" : "2012-10-17",
+						                  "Statement": [ {
+																 "Action": "*",
+																 "Effect": "Allow",
+																 "Resource" : "*"
+        						 	}]
+			                }
+							   }]
+			      }
+			},
+      "BuildProject": {
+        "Type": "AWS::CodeBuild::Project",
+        "Properties": {
+          "Name":  { "Fn::Join" : [ "_", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "build_Application" ] ] },
+          "Description": "build the application part for cades using terraform",
+          "ServiceRole": {"Ref" : "Adminrole" },
+          "Artifacts": {
+            "Type": "no_artifacts"
+          },
+          "Environment": {
+            "Type": "LINUX_CONTAINER",
+            "ComputeType": "BUILD_GENERAL1_SMALL",
+            "Image": "aws/codebuild/python:2.7.12",
+            "EnvironmentVariables": [
+              { "Name": "datapart", "Value": { "Ref" : "ProjectName"}  },
+              { "Name": "region", "Value":  { "Ref" : "AWS::Region" } },
+              { "Name": "applicationname", "Value": { "Ref" : "AWS::StackName" }  },
+              { "Name": "destroy" , "Value": "False" }
+            ]
+          },
+          "Source": {
+            "Auth": {
+                "Type": "OAUTH"
+            },
+            "Location": {
+                "Ref": "RepositoryUrl"
+            },
+            "Type": "GITHUB"
+          },
+          "TimeoutInMinutes": 10,
+          "Tags": [ {  "Key": "Project", "Value": "Run Terraform From CodeBuild"  } ]
+        }
+      }
+    }
+}
