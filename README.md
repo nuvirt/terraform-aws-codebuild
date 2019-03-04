@@ -17,8 +17,7 @@ Choose a region, everything will be created in that region
 1 - run the cloudformation file
 -------------------------------
 
-[![Launch Stack](https://github.com/nuvirt/terraform-aws-codebuild/blob/master/aws-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=terraform&templateURL=https://raw.githubusercontent.com/nuvirt/terraform-aws-codebuild/master/cloudformation/codebuild.json)
-
+[![Launch Stack](https://github.com/nuvirt/terraform-aws-codebuild/blob/master/aws-stack.svg)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=terraform&templateURL=https://)
 
 This will create 3 objects:
 
@@ -48,8 +47,24 @@ Take a look to the CloudWatch logs and verify that everything is green in codebu
 1. empty the bucket
 2. delete the cloudformation template
 
+Troubleshooting
+------------------------
+
+At the first try the stack creation failed with the following error message:
+
+```bash
+No Access token found, please visit AWS CodeBuild console to connect to GitHub (Service: AWSCodeBuild; Status Code: 400; Error Code: InvalidInputException; Request ID: ab458603-6fd4-11e8-9310-ff116e0423f9)
+To get rid of this error message it’s necessary to set up the AWS OAuth application to have access to your repositories.
+
+```
+
+You have to navigate to the AWS CodeBuild console, create a project and select GitHub as source provider. The project does not need to be saved, it is only important to connect to GitHub.
+
+
 References
 ------------------------
 
 - https://github.com/giuseppeborgese/run-terraform-inside-aws-codebuild
 - https://github.com/gkrizek/codebuild-ci-sample
+- https://github.com/buildkite/cloudformation-launch-stack-button-svg
+- https://github.com/aws-quickstart/quickstart-git2s3

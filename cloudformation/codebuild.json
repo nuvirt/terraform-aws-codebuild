@@ -3,18 +3,9 @@
 
   "Description" : "A codebuild system to run terraform ",
   "Parameters" : {
-        "DataPartName" : {
-          "Description": "the data part name as appear in the cloudformation stack name",
-          "Type": "String",
-          "Default" : "mydataname"
-        },
-        "GithubToken": {
-          "Description": "GitHub API Token used for Status creation.",
-          "Type": "String"
-      },
       "ProjectName": {
           "AllowedPattern": "^[a-zA-Z0-9-_]*$",
-          "Description": "Name to give the CodeBuild Project. For this sample, use the same name as your repository.",
+          "Description": "Name to give the CodeBuild Project. Use the same name as your repository.",
           "MaxLength": "255",
           "MinLength": "2",
           "Type": "String"
@@ -28,7 +19,7 @@
       "S3StateAndSoftware": {
   					"Type" : "AWS::S3::Bucket",
   					"Properties" : {
-  								"BucketName" : { "Fn::Join" : [ ".", [ { "Ref" : "ProjectName" }, { "Ref" : "AWS::Region" } , "terraform-state" ] ] }
+  								"BucketName" : { "Fn::Join" : [ ".", [ { "Ref" : "ProjectName" }, { "Ref" : "AWS::Region" } , "terraform-state-software" ] ] }
   					}
   		},
       "Adminrole": {
@@ -61,7 +52,7 @@
         "Type": "AWS::CodeBuild::Project",
         "Properties": {
           "Name":  { "Fn::Join" : [ "_", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "build_Application" ] ] },
-          "Description": "build the application part for cades using terraform",
+          "Description": "build the infrastructure using terraform",
           "ServiceRole": {"Ref" : "Adminrole" },
           "Artifacts": {
             "Type": "no_artifacts"
