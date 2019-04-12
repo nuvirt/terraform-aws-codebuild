@@ -19,13 +19,13 @@
       "S3StateAndSoftware": {
   					"Type" : "AWS::S3::Bucket",
   					"Properties" : {
-  								"BucketName" : { "Fn::Join" : [ ".", [ { "Ref" : "ProjectName" }, { "Ref" : "AWS::Region" } , "terraform-state-software" ] ] }
+  								"BucketName" : { "Fn::Join" : [ "-", [ { "Ref" : "ProjectName" }, { "Ref" : "AWS::Region" } , "terraform-state-software" ] ] }
   					}
   		},
       "Adminrole": {
 				"Type": "AWS::IAM::Role",
 			  "Properties": {
-					   "RoleName": { "Fn::Join" : [ ".", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "codebuild" ] ] },
+					   "RoleName": { "Fn::Join" : [ "-", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "codebuild" ] ] },
 					    "AssumeRolePolicyDocument": {
 								     "Version" : "2012-10-17",
 								     "Statement": [ {
@@ -51,7 +51,7 @@
       "BuildProject": {
         "Type": "AWS::CodeBuild::Project",
         "Properties": {
-          "Name":  { "Fn::Join" : [ "_", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "build_Application" ] ] },
+          "Name":  { "Fn::Join" : [ "-", [ { "Ref" : "AWS::StackName" }, { "Ref" : "AWS::Region" } , "build" ] ] },
           "Description": "build the infrastructure using terraform",
           "ServiceRole": {"Ref" : "Adminrole" },
           "Artifacts": {
